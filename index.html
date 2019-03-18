@@ -1,0 +1,340 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>WPP皮肤</title>
+	<link rel="stylesheet" type="text/css" href="../script/css/skin_wpp.css" media="all" />
+</head>
+<body ms-controller="mainController">	
+	<div id="container" ms-click-1="toggleSkinSelect($event, true)" ms-click-2="toggleSetting($event, true)">
+		<!-- 头部 开始 -->
+		<header class="clearfix">
+			<div class="movearea" ms-mousedown="moveWindow"></div>
+			<div class="topbar">
+				<div class="logo"><h1><span class="icon_w"></span>更改皮肤</h1></div>
+				<div class="topbtn"><a href="#" class="icon_close" ms-click="closeWin($event, 0)"></a></div>
+			</div>
+			<!-- 导航 开始 -->
+			<div class="navbar clearfix">
+				<nav>
+					<ul ms-click="selectTag">
+						<li ms-class="current:checkTag(0)"><a href="#" ms-click="sendCollect('clickfirsttag', '推荐皮肤')"><span class="icon_recommend" tagIndex="0">推荐皮肤</span></a><span class="icon_new" ms-visible="isNew"></span></li>
+						<!-- <li><a href="#"><span class="icon_suit">皮肤套装</span></a></li> -->
+						<li ms-class="current:checkTag(1)||checkTag(4)"><a href="#" ms-click="sendCollect('clickfirsttag', '我的皮肤')"><span class="icon_my" tagIndex="1">我的皮肤</span><span class="dot" style= " "></span></a></li>
+					</ul>
+				</nav>
+				<!-- 导航 结束 -->
+				<div class="nav_r">
+					<div class="like_icon" ms-class-1="like_icon_active:checkTag(6)">
+						<a href="#" class="icon_favorite" ms-click-1="selectTag('', 6)" tagIndex="6" ms-click-2="sendCollect('clickfirsttag', '我的收藏')" title="我喜欢的皮肤">我喜欢的皮肤</a>
+						<span class="drop_arrow"></span>
+					</div>
+					<span class="spline"></span>
+					<div class="set" ms-click="toggleSetting">
+						<a href="#" class="icon_set" ms-click="sendCollect('clicksetting', 0)" title="设置">设置</a>
+						<ul class="set_list" ms-visible="showSettingMark">
+							<li ms-class="current:allApply"><a href="#" ms-click="selectAllApply" class="select_use">应用至WPS全组件</a></li>
+							<li><a ms-click="selectTag('', 4)" href="#" tagIndex="4">管理皮肤</a></li>
+							<li><a href="#" selectMark="upload" ms-click="clickSkinSelect">载入皮肤包</a></li>
+							<!-- <li class="last"><a href="#" selectMark="edit" ms-click="clickSkinSelect">皮肤编辑器</a></li> -->
+						</ul>
+					</div>
+					<div class="feedback"><a href="#" ms-click-1="openLink($event, 'http://bbs.wps.cn/forum-wpsskin-1.html')" ms-click-2="sendCollect('clickbtn', 6)" title="反馈" class="icon_feedback">反馈</a></div>
+				</div>
+			</div>
+		</header>
+		<!-- 头部 结束 -->
+		
+		<!-- 皮肤内容排版 开始 -->
+		<div id="main">			
+			<!-- 推荐皮肤 开始 -->
+			<div class="skin_recommend"   style="display:block;" ms-visible="checkTag(0)">
+				<div class="c_head clearfix">
+					<!-- 导航 二级分类  -->
+					<div class="subnav">
+						<ul class="subnav_1" style="display:block;" ms-click="selectCate">
+							<li ms-class="current:checkCateIndex(-1)"><a href="#" cateIndex="-1">全部</a></li>
+							<li ms-class="current:checkCateIndex($index)" ms-repeat-cd="cateTagData"><a href="#" ms-attr-cateIndex="$index" ms-text="cd.name"></a></li>
+						</ul>
+					</div>
+					<div class="c_head_r">
+						<!--div class="morelink"><a href="#" class="icon_more" title="更多皮肤" ms-click-1="openLink($event, '测试')" ms-click-2="sendCollect('clickbtn', 7)">更多皮肤</a></div>
+						<div class="spline"></div-->
+						<!--div class="try_fresh"><a href="#" ms-click="selectCate($event, -2)"><span class="icon_fresh"></span>试试手气</a></div-->
+						<a href="javascript:void(0);" class="dmemlink" ms-click="openUpgradeMember(this)"><span>稻壳会员尊享全部皮肤</span><span class="obg">立即升级</span></a>
+					</div>
+				</div>
+				<!-- 内容滚动区 -->
+				<div class="scroll_container" id="scrollDiv">								
+					<!-- 皮肤图片 开始 -->
+					<div ms-visible="!networkError">
+						<ul class="skin_list clearfix" ms-click="clickSkin" style="display:none;" ms-visible="!loadingMark&&skinData.length">
+							<li ms-repeat-sd="skinData" ms-hover="over" ms-class-1="select:checkUsed(sd.name)" ms-attr-skinIndex="$index">
+								<div class="skin_img"><a href="#"><img ms-src="sd.imgUrl" alt="" /></a><img src="../script/css/img/defaultpic226.png" alt="" class="defaultpic" /></div>
+								<div class="skin_info">
+									<h5 class="name" ms-class-1="name_default:sd.skinType===1||sd.skinType===3">
+										<span class="nametxt">{{sd.remark}}</span>
+										<span class="icon_2016" ms-visible="sd.ext&&sd.ext.skin_version&&sd.ext.skin_version=='2016'"></span>
+										<span class="icon_2013" ms-visible="sd.ext&&sd.ext.skin_version&&sd.ext.skin_version=='2013'"></span>
+									</h5>
+									
+									<div ms-visible="sd.skinType !== 1&&sd.skinType!=3">
+										<div class="author"><span ms-title="sd.author" ms-text="sd.author"></span></div>
+										<!--div class="share"><a href="#" class="icon_share">分享</a></div-->
+										<div class="sd_down"><span ms-title="sd.down">{{sd.down|thousandNumber}}</span>人正在使用</div>
+										<div class="enjoy"><a href="#" class="icon_admire" ms-class-1="icon_admire_suc:sd.isLike" ms-attr-isLikeBtn="$index" title="喜欢"></a><span ms-title="sd.like" ms-text="sd.like"></span></div>
+									</div>
+								</div>
+								<div class="skin_select"><span></span></div>
+								<div class="skin_click" ms-visible="checkUsed(sd.name)"></div>
+								<div class="vipskin" ms-visible="sd.mobanType==='3'">稻壳会员</div>
+								<div class="viptxtbg">
+									<span class="viptxt">VIP尊贵皮肤，全新会员仅需3元。<a href="" target="_blank">详情</a></span>
+									<span class="blackbg"></span>
+								</div>								
+								<div class="blackbg"></div>
+								<div class="dl_error"><span></span>下载失败 <a href="javascript:viod(0);" class="close" title="关闭"></a></div>
+							</li>													
+						</ul>
+					</div>
+					<!-- 皮肤图片 结束 -->
+				</div>
+				<!--   推荐 没有内容 加载时   -->
+				<div class="nocontent" ms-visible="!skinData.length&&!loadingMark"><p>我们正日夜兼程为您设计新的皮肤<br>敬请期待...</p></div>
+				<!--   网络断开状态   -->
+				<div class="netorrer_con" ms-visible="networkError" >
+					<!-- 断网时显示 系统皮肤 -->
+					<div class="skin_system">
+						<h3 class="ttl">系统皮肤</h3>
+						<ul class="clearfix" ms-click="selectSysSkin">
+							<li ms-repeat-ssd="sysSkinData" ms-class="select:checkUsed(ssd.name)"  ms-attr-sysSkinMark="$index">
+								<div class="img"><a href="#"><img ms-src="ssd.sysUrl" alt="" /><span class="sys_skinname" ms-class-1="sys_skinname_select:checkUsed(ssd.name)">{{ssd.remark}}</span></a></div>
+								<div class="skin_select"><span></span></div>
+								<div class="skin_over"></div>
+								<div class="skin_click" ms-visible="sysSkinMark===$index||checkUsed(ssd.name)"></div>
+							</li>
+						</ul>
+					</div>
+					<!-- 提示信息 -->	
+					<div class="net_error"><p><strong>无法连接服务器，请检查您的网络连接。</strong><a href="javascript:void(0)" ms-click="checkNetwork" class="refresh"><span></span>刷新试试</a></p></div>
+				</div>
+				<div class="loading_con" ms-visible="loadingMark">内容加载中...</div>
+
+			</div>
+			<!-- 推荐皮肤 结束 -->
+			
+			<!-- 管理皮肤-->
+			<div class="skin_manage"  ms-visible="checkTag(4)">
+				<div class="con_head">
+					<h3 class="ttl">管理已下载的皮肤</h3>
+					<a href="javascript:void(0);" class="back" ms-click="returnTag">返回</a>
+				</div>
+				<div class="scroll_container" id="manageScrollDiv"><!-- 滚动层 -->
+					<div>
+					<ul class="skin_list clearfix" ms-click="clickDelSkinBtn">
+						<li ms-repeat-sd="manageSkinData" ms-hover="over" ms-class-2="select:checkUsed(sd.name)">
+							<div class="skin_img"><a href="#"><img ms-src="sd.path"/></a></div>
+							<div class="skin_info" ms-if="!checkApplySkin(sd.name)">
+								<h5 class="name">
+									<span class="nametxt" ms-text="sd.name"></span>
+									<!-- <span class="icon_2016" ms-visible="sd.ext&&sd.ext.skin_version&&sd.ext.skin_version=='2016'"></span>
+									<span class="icon_2013" ms-visible="sd.ext&&sd.ext.skin_version&&sd.ext.skin_version=='2013'"></span> -->
+								</h5>
+								<div class="downloads"><span ms-title="sd.author" ms-text="sd.author"></span></div>								
+							</div>
+							<div class="skin_info_wps" ms-if="checkApplySkin(sd.name)">								
+								<div class="appicon">
+									<a href="javascript:void(0);" class="icon_wps" ms-visible="allApplySkin.wps === sd.name" title="WPS文字正在使用本皮肤"></a>
+									<a href="javascript:void(0);" class="icon_wpp" ms-visible="allApplySkin.wpp === sd.name" title="WPS演示正在使用本皮肤"></a>
+									<a href="javascript:void(0);" class="icon_et" ms-visible="allApplySkin.et === sd.name" title="WPS表格正在使用本皮肤"></a>
+								</div>
+							</div>
+							<div class="vipskin"></div>		
+							<div class="skin_select"><span></span></div>
+							<div class="del" ms-visible="!checkApplySkin(sd.name)"><a href="#" title="删除" class="icon_del" ms-attr-manageSkinIndex="$index"></a></div>	
+							<div class="blackbg" ms-if="!checkApplySkin(sd.name)"></div>		
+							<div class="maskbg" ms-visible="checkApplySkin(sd.name)"></div>
+							<div ms-attr-id="delTip_{{$index}}"> 
+							</div>
+							<div class="current_skin" ms-visible="checkApplySkin(sd.name)">
+								<div class="current_skin_mask"></div>
+								<p ms-html="getDelTip(sd.name)" class="getdel"></p>
+							</div>
+						</li>													
+					</ul>
+					</div>
+				</div>
+				<!--   管理 没有内容 加载时   -->
+				<div class="nocontent" ms-visible="!manageSkinData.length"><p>您最近没有使用任何皮肤！</p></div>
+			</div>
+			<!-- 管理皮肤 结束 -->
+			
+			<!-- 我的皮肤 开始 -->
+			<div class="skin_my" ms-visible="checkTag(1)" id="myScrollDiv">
+				<!-- 系统皮肤 -->
+				<div class="skin_system">
+					<h3 class="ttl">系统皮肤</h3>
+					<ul class="clearfix" ms-click="selectSysSkin">
+						<li ms-repeat-ssd="sysSkinData" ms-class="select:checkUsed(ssd.name)"  ms-attr-sysSkinMark="$index">
+							<div class="img"><a href="#"><img ms-src="ssd.sysUrl" alt="" /><span class="sys_skinname" ms-class-1="sys_skinname_select:checkUsed(ssd.name)">{{ssd.remark}}</span></a></div>
+							<div class="skin_select"><span></span></div>
+							<div class="skin_over"></div>
+							<div class="skin_click" ms-visible="sysSkinMark===$index||checkUsed(ssd.name)"></div>
+						</li>
+					</ul>
+				</div>
+				
+				<!-- 皮肤图片 开始 -->
+				<div class="skin_lately">
+					<h3 class="ttl">最近使用的皮肤</h3>
+						<div>
+							<ul class="skin_list clearfix" ms-click="selectMySkin">
+								<li ms-repeat-msd="mySkinData" ms-hover="over" ms-class-2="select:checkUsed(msd.name)" ms-attr-skinIndex="$index">
+									<div class="skin_img"><a href="#"><img ms-src="msd.path" alt="" /></a></div>
+									<div class="skin_info">
+										<h5 class="name">
+											<span class="nametxt">{{msd.name}}</span>
+											<div class="icon_2016" ms-visible="msd.ext&&msd.ext.skin_version&&msd.ext.skin_version=='2016'"></div>
+											<div class="icon_2013" ms-visible="msd.ext&&msd.ext.skin_version&&msd.ext.skin_version=='2013'"></div>
+										</h5>
+									</div>
+									<div class="skin_info_wps">
+										<div class="appicon">
+											<a href="javascript:void(0);" class="icon_wps" ms-visible="allApplySkin.wps === msd.name" title="WPS文字正在使用本皮肤"></a>
+											<a href="javascript:void(0);" class="icon_wpp" ms-visible="allApplySkin.wpp === msd.name" title="WPS演示正在使用本皮肤"></a>
+											<a href="javascript:void(0);" class="icon_et" ms-visible="allApplySkin.et === msd.name" title="WPS表格正在使用本皮肤"></a>
+										</div>										
+									</div>
+									<div class="skin_select"><span></span></div>
+									<div class="vipskin"></div>
+									<div class="skin_click" ms-visible="mySkinMark===$index||checkUsed(msd.name)"></div>
+									<div class="blackbg"></div>
+								</li>							
+							</ul>
+						</div>
+				</div>
+				<!-- 皮肤图片 结束 -->
+				<!--   最近使用皮肤 没有内容 加载时   -->
+				<div class="nocontent" ms-visible="!mySkinData.length"><p>您最近没有使用任何皮肤！</p></div>
+			</div>
+			<!-- 我的皮肤 结束 -->
+			
+			<!-- 我喜欢的皮肤 -->
+			<div class="skin_favorite"  ms-visible="checkTag(6)">
+				<div class="con_head">
+					<h3 class="ttl">我喜欢的皮肤</h3>
+					<a href="javascript:void(0);" class="back" ms-click="returnTag">返回</a>
+				</div>
+				<div class="scroll_container" id="collectScrollDiv" ms-visible="!networkError"><!-- 滚动层 -->
+					<div>
+						<ul class="skin_list clearfix" ms-click="selectCollectSkin" style="display:none;" ms-visible="!loadingCollectMark&&collectSkinData.length">
+							<li ms-repeat-sd="collectSkinData" ms-hover="over" ms-class-1="select:checkUsed(sd.name)" ms-attr-skinIndex="$index" ms-attr-id="collect_{{$index}}">
+								<div class="skin_img"><a href="#"><img ms-src="sd.imgUrl" alt="" /></a><img src="../script/css/img/defaultpic226.png" alt="" class="defaultpic" /></div>
+								<div class="skin_info">
+									<h5 class="name" ms-class-1="name_default:sd.skinType===1">
+										<span class="nametxt">{{sd.remark}}</span>
+										<!-- <span class="icon_2016" ms-visible="sd.ext&&sd.ext.skin_version&&sd.ext.skin_version=='2016'"></span>
+										<span class="icon_2013" ms-visible="sd.ext&&sd.ext.skin_version&&sd.ext.skin_version=='2013'"></span> -->
+									</h5>							
+									<div class="icon_fav"><a href="javascript:void(0);" title="喜欢" class="collect_red" style="display:block;" isLikeBtn="true"></a></div>
+								</div>
+								<div class="skin_select"><span></span></div>
+								<div class="skin_click" ms-visible="checkUsed(sd.name)"></div>
+								<div class="vipskin"></div>								
+								<div class="blackbg"></div>
+								<div class="dl_error"><span></span>下载失败 <a href="javascript:viod(0);" class="close" title="关闭"></a></div>
+							</li>													
+						</ul>
+					</div>
+				</div>
+				<!--   收藏没有内容 加载时   -->
+				<div class="nocontent" ms-visible="!collectSkinData.length&&!loadingCollectMark">
+					<div class="bdt">
+						<p >您还未收藏任何皮肤，<a href="javascript:void(0);" class="greenlink" ms-click="selectTag('', 0)">快去挑选</a>吧！</p>
+					</div>
+				</div>	
+
+				<!--   网络断开状态   -->
+				<div class="netorrer_con" ms-visible="networkError" >
+					<!-- 断网时显示 系统皮肤 -->
+					<div class="skin_system">
+						<h3 class="ttl">系统皮肤</h3>
+						<ul class="clearfix" ms-click="selectSysSkin">
+							<li ms-repeat-ssd="sysSkinData" ms-class="select:checkUsed(ssd.name)"  ms-attr-sysSkinMark="$index">
+								<div class="img"><a href="#"><img ms-src="ssd.sysUrl" alt="" /><span class="sys_skinname" ms-class-1="sys_skinname_select:checkUsed(ssd.name)">{{ssd.remark}}</span></a></div>
+								<div class="skin_select"><span></span></div>
+								<div class="skin_over"></div>
+								<div class="skin_click" ms-visible="sysSkinMark===$index||checkUsed(ssd.name)"></div>
+							</li>
+						</ul>
+					</div>
+					<!-- 提示信息 -->		
+					<div class="net_error"><p><strong>无法连接服务器，请检查您的网络连接。</strong><a href="javascript:void(0)" ms-click="checkCollectNetwork" class="refresh"><span></span>刷新试试</a></p></div>
+				</div>
+					
+				<div class="loading_con" ms-visible="loadingCollectMark" >内容加载中...</div>	
+
+			</div>
+			<!-- 我喜欢的皮肤 结束 -->
+						
+		</div>
+		
+		
+		<!-- 各种弹出提示窗口 -->
+		
+		<!-- 启动皮肤 loading -->
+		<div class="start_prompt" ms-visible="editSkinMark">
+			<!-- 皮肤下载进度 -->
+			<canvas id="editSkinProgress" width="50" height="50"></canvas>
+			<div class="txt">正在启动皮肤编辑器，请稍候...</div>
+		</div>
+		
+		<!-- 删除皮肤时提示 -->
+		<div class="del_tip" id="delTip" ms-visible="delSkinTip">
+			<div class="del_tip_c">
+				<p>确定要删除本皮肤吗?</p>
+				<a href="#" class="btn_del_affirm" ms-click="clickConfirmDelSkinBtn">确认</a>
+				<a href="#" class="btn_del_cannel" ms-click="clickCancelDelSkinBtn">取消</a>
+			</div>
+			<div class="del_tip_mask"></div>
+		</div>
+							
+		<div class="maskbg"></div>
+		
+		<div id="tipCtrl" ms-controller="TipController">
+			<div ms-include="'tip'"></div>
+		</div>
+		<!-- 信息提示 -->
+        <script type="avalon" id="tip">
+            <div id="prompt_box" ms-visible="tipMark">
+				<div class="prompt_head">
+					<h3>提示</h3>
+					<a href="#" class="icon_close2" ms-click="close" title="关闭"></a>
+				</div>
+				<p ms-class="tl:overLength" ms-html="msg"></p>
+				<div class="prompt_btn" ms-visible="tipMark&&!confirmMark">
+					<div class="btn_ok" style="padding-left:45px;display:block;"><a href="#" ms-click="confirm" style="width: 60px;">确定</a></div>					
+				</div>
+				<div class="prompt_btn" ms-visible="confirmMark">
+					<div class="btn_ok" style="display:block;"><a href="#" ms-click="confirm" ms-text="confirmTxt"></a></div>
+					<div class="btn_cancel" style="display:block;"><a href="#" ms-click="close" ms-text="cancelTxt"></a></div>
+				</div>
+				
+			</div>
+        </script>
+		
+	</div>
+	<canvas id="downloadProgress" width="227" height="133" style="display:none;"></canvas>
+
+	<canvas id="downloadSysProgress" width="228" height="122" style="display:none;"></canvas>
+	
+	<input type="hidden" id="app" value="wpp">	
+	<input type="hidden" id="skinVersion" value="1.4.0">	
+</body>
+<script type="text/javascript" src="../script/js/lib/requirejs/require.js"></script>
+<script type="text/javascript" src="../script/js/lib/jquery/jquery.js"></script>
+<script type="text/javascript" src="../script/js/load.js"></script>
+<script type="text/javascript">
+	load();
+</script>
+</html>
